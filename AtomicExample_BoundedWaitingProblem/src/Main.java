@@ -9,10 +9,12 @@ class Main extends Thread {
     static int val=0;
     volatile HashMap<Long,Integer> freq =new HashMap<Long,Integer>();
     volatile HashMap<Long,Boolean> waiting=new HashMap<Long,Boolean>();
+
     public void run()
     {
         for (int i = 0; i < 5; i++) {
            long  indx  =Thread.currentThread().getId();
+            long tmp=indx;
            waiting.put(indx,true);
            key.set(true);
            while((Boolean)waiting.get(indx)&&key.get()){
@@ -26,11 +28,13 @@ class Main extends Thread {
             }
             val++; //critical section
             for(Map.Entry e:waiting.entrySet()) {
-                if ((Boolean) e.getValue()) {
+                tmp = ((Long) e.getKey());
+                if ((Boolean) e.getValue()&&tmp!=indx) {
                     e.setValue(false);
                     break;
                 }
             }
+
                 lock.set(false);
         }
     }
