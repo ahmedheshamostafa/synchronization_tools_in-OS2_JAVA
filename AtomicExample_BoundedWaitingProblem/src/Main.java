@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -8,25 +9,29 @@ class Main extends Thread {
     volatile AtomicBoolean key=new AtomicBoolean(false);
     static int val=0;
     volatile HashMap<Long,Integer> freq =new HashMap<Long,Integer>();
-    volatile HashMap<Long,Boolean> waiting=new HashMap<Long,Boolean>();
+    volatile LinkedHashMap<Long,Boolean> waiting=new LinkedHashMap<Long,Boolean>();
+
 
     public void run()
     {
         for (int i = 0; i < 5; i++) {
            long  indx  =Thread.currentThread().getId();
             long tmp=indx;
+            System.out.println("thread "+indx+" want to enter critical section");
            waiting.put(indx,true);
            key.set(true);
            while((Boolean)waiting.get(indx)&&key.get()){
                     key.set(lock.compareAndExchange(false, true));
            }
             waiting.put(indx,false);
+
             if(freq.containsKey(indx))
                 freq.put(indx, freq.get(indx)+1);
             else {
                 freq.put(indx, 1);
             }
             val++; //critical section
+
             for(Map.Entry e:waiting.entrySet()) {
                 tmp = ((Long) e.getKey());
                 if ((Boolean) e.getValue()&&tmp!=indx) {
@@ -56,6 +61,7 @@ class Main extends Thread {
         fourth.join();
         for(Map.Entry e:c.freq.entrySet())
             System.out.println("Thread id: "+ e.getKey()+" enter critical section "+e.getValue()+" times");
+
         System.out.println(val);
     }
 }
