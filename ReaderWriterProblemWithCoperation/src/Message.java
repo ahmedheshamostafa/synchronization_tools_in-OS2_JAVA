@@ -1,4 +1,6 @@
-
+/*this example extracted from fllowing tutorial 
+https://www.digitalocean.com/community/tutorials/java-thread-wait-notify-and-notifyall-example
+*/
 class Message {
     String message;
     boolean empty = true;
@@ -8,12 +10,7 @@ class Message {
         while (empty) {
             try {
                 /*
-                 Reader thread waits until Writer invokes the notify()
-                 method or the notifyAll() method for 'message' object.
-                 Reader thread releases ownership of lock and waits
-                 until Writer thread notifies Reader thread waiting on
-                 this object's lock to wake up either through a call to
-                 the notify method or the notifyAll method.
+                 Reader thread waits until Writer invokes the notifyAll()
                  */
                 wait();
             } catch (InterruptedException e) {
