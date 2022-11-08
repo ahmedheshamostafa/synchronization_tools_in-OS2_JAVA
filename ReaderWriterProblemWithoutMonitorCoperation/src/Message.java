@@ -1,3 +1,6 @@
+/*this example extracted from fllowing tutorial 
+https://www.digitalocean.com/community/tutorials/java-thread-wait-notify-and-notifyall-example
+*/
 class Message {
     String message;
     boolean empty = true;
